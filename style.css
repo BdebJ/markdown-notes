@@ -38,11 +38,11 @@ button:focus {
     align-items: center;
 }
 
-.sidebar--header > h3 {
+.sidebar--header>h3 {
     font-size: 1.75rem;
 }
 
-.new-note {
+.new--note {
     cursor: pointer;
     background-color: #4A4E74;
     border: none;
@@ -52,7 +52,7 @@ button:focus {
     width: 30px;
 }
 
-.first-note {
+.create--first--note {
     cursor: pointer;
     background-color: #4A4E74;
     border: none;
@@ -129,7 +129,7 @@ button:focus {
     display: flex;
 }
 
-.no-notes {
+.no--notes {
     width: 100%;
     height: 100vh;
     display: flex;
@@ -145,7 +145,7 @@ button:focus {
     border: none;
 }
 
-.title:hover > .delete-btn {
+.title:hover>.delete-btn {
     display: block;
 }
 
@@ -153,11 +153,11 @@ button:focus {
     cursor: pointer;
 }
 
- .gg-trash {
+.gg-trash {
     box-sizing: border-box;
     position: relative;
     display: block;
-    transform: scale(var(--ggs,1));
+    transform: scale(var(--ggs, 1));
     width: 10px;
     height: 12px;
     border: 2px solid transparent;
@@ -196,4 +196,52 @@ button:focus {
     border-top-right-radius: 2px;
     top: -7px;
     left: -2px
-} 
+}
+
+.login--container {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.login--header {
+    margin: 50px;
+    text-align: center;
+    font-size: 50px;
+}
+
+.login--btnset {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+.login--btn,
+.register--btn {
+    cursor: pointer;
+    background-color: #4A4E74;
+    margin: 10px;
+    padding: 1rem;
+    border: none;
+    width: 200px;
+    border-radius: 3px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.register--btn {
+    color: white;
+}
+
+.login--btn {
+    background-color: white;
+    border: 1px solid #4A4E74;
+}
+
+.login--btn:hover {
+    color: white;
+    background-color: #4A4E74;
+}
