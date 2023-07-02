@@ -1,5 +1,5 @@
 {
-  "name": "project",
+  "name": "markdown-client",
   "dependencies": {
     "firebase": "^9.22.2",
     "react": "17.0.2",
@@ -13,8 +13,8 @@
     "vite": "latest"
   },
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
+    "start": "vite --port 7777",
+    "dev": "vite --port 7777",
     "build": "vite build",
     "preview": "vite preview"
   }
