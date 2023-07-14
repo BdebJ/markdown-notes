@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { EmailLabel, PasswordLabel, ConfirmPasswordLabel, SignupButton } from './AuthComponents';
 
-import { EmailLabel, PasswordLabel, LoginButton, SignupButton } from './AuthComponents';
-
-export default function Login() {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({ username_input: '', password_input: '' });
+export default function Signup() {
+    const [formData, setFormData] = useState({
+        username_input: '',
+        password_input: '',
+        confirm_password_input: '',
+    });
 
     const formDataChangeHandler = (event) => {
         const { id, value } = event.target;
@@ -15,20 +16,15 @@ export default function Login() {
         }));
     };
 
-    const handleLogin = (event) => {
-        event.preventDefault();
-        //Handle Login
-    };
-
     const handleSignup = (event) => {
         event.preventDefault();
-        navigate('/signup');
+        //Handle signup
     };
 
     return (
         <>
             <div className="auth--container">
-                <form className="auth--form" onSubmit={handleLogin}>
+                <form className="auth--form" onSubmit={handleSignup}>
                     <h1 className="auth--header">Markdown Notes</h1>
 
                     <EmailLabel
@@ -41,8 +37,12 @@ export default function Login() {
                         formDataChangeHandler={formDataChangeHandler}
                     />
 
+                    <ConfirmPasswordLabel
+                        confirmPassword={formData.confirm_password_input}
+                        formDataChangeHandler={formDataChangeHandler}
+                    />
+
                     <div className="auth--btnset">
-                        <LoginButton handleLogin={handleLogin} />
                         <SignupButton handleSignup={handleSignup} />
                     </div>
                 </form>

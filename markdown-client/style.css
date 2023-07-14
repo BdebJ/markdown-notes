@@ -195,7 +195,9 @@ button:focus {
     left: -2px;
 }
 
-.login--container {
+/*Login and signup*/
+
+.auth--container {
     width: 400px;
     background-color: rgba(255, 255, 255, 0.13);
     position: absolute;
@@ -210,14 +212,14 @@ button:focus {
     padding: 50px 35px;
 }
 
-.login--form * {
+.auth--form * {
     font-family: 'Karla', 'sans-serif';
     letter-spacing: 0.5px;
     outline: none;
     border: none;
 }
 
-.login--header {
+.auth--header {
     margin: 20px;
     margin-top: 5px;
     text-align: center;
@@ -231,7 +233,7 @@ button:focus {
     font-weight: 500;
 }
 
-.login--input {
+.auth--input {
     display: block;
     height: 50px;
     width: 100%;
@@ -251,8 +253,7 @@ button:focus {
     text-align: center;
 }
 
-#login--btn,
-#signup--btn {
+.auth--btn {
     cursor: pointer;
     margin: 10px;
     margin-top: 20px;
@@ -263,17 +264,18 @@ button:focus {
     transition: 0.25s;
 }
 
-.active--btn {
+.elegant--btn {
     background-color: white;
     border: 1px solid #4a4e74;
 }
 
-.active--btn:hover {
+.elegant--btn:hover {
     color: white;
     background-color: #4a4e74;
 }
 
-.inactive--btn {
+.flat--btn {
     color: white;
     background-color: #4a4e74;
 }
+
