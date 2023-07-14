@@ -1,4 +1,4 @@
-import { notesCollection, db } from '../../config/firebase';
+import { notesCollection, db } from '../config/firebase_config';
 import { onSnapshot, addDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const FIRESTORE_COLLECTION = import.meta.env.VITE_FIRESTORE_COLLECTION;

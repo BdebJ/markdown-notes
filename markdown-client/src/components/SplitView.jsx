@@ -1,4 +1,4 @@
-import { fetchNotes, createNewNote, updateNoteText, deleteNoteById } from '../util/firebase/firebaseutility';
+import { fetchNotes, createNewNote, updateNoteText, deleteNoteById } from '../util/firebase_utility';
 import { useEffect, useState } from 'react';
 
 import Split from 'react-split';
@@ -50,17 +50,21 @@ export default function SplitView() {
     };
 
     return notes.length > 0 ? (
-        <Split sizes={[20, 80]} direction="horizontal" className="split">
-            <Sidebar
-                notes={sortedNotes}
-                currentNote={currentNote}
-                setCurrentNoteId={setCurrentNoteId}
-                newNote={createNote}
-                deleteNote={deleteNote}
-            />
-            <Editor tempNoteText={tempNoteText} setTempNoteText={setTempNoteText} />
-        </Split>
+        <>
+            <Split sizes={[20, 80]} direction="horizontal" className="split">
+                <Sidebar
+                    notes={sortedNotes}
+                    currentNote={currentNote}
+                    setCurrentNoteId={setCurrentNoteId}
+                    newNote={createNote}
+                    deleteNote={deleteNote}
+                />
+                <Editor tempNoteText={tempNoteText} setTempNoteText={setTempNoteText} />
+            </Split>
+        </>
     ) : (
-        <NoNotes createNote={createNote} />
+        <>
+            <NoNotes createNote={createNote} />
+        </>
     );
 }

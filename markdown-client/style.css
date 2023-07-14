@@ -38,13 +38,13 @@ button:focus {
     align-items: center;
 }
 
-.sidebar--header>h3 {
+.sidebar--header > h3 {
     font-size: 1.75rem;
 }
 
 .new--note {
     cursor: pointer;
-    background-color: #4A4E74;
+    background-color: #4a4e74;
     border: none;
     color: white;
     border-radius: 3px;
@@ -54,7 +54,7 @@ button:focus {
 
 .create--first--note {
     cursor: pointer;
-    background-color: #4A4E74;
+    background-color: #4a4e74;
     border: none;
     color: white;
     border-radius: 3px;
@@ -95,14 +95,14 @@ button:focus {
     font-size: 0.8rem;
     font-weight: 400;
     line-height: 1.2rem;
-    color: #4A4E74;
+    color: #4a4e74;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .selected-note {
-    background-color: #4A4E74;
+    background-color: #4a4e74;
 }
 
 .selected-note .text-snippet {
@@ -145,7 +145,7 @@ button:focus {
     border: none;
 }
 
-.title:hover>.delete-btn {
+.title:hover > .delete-btn {
     display: block;
 }
 
@@ -161,21 +161,18 @@ button:focus {
     width: 10px;
     height: 12px;
     border: 2px solid transparent;
-    box-shadow:
-        0 0 0 2px,
-        inset -2px 0 0,
-        inset 2px 0 0;
+    box-shadow: 0 0 0 2px, inset -2px 0 0, inset 2px 0 0;
     border-bottom-left-radius: 1px;
     border-bottom-right-radius: 1px;
-    margin-top: 4px
+    margin-top: 4px;
 }
 
 .gg-trash::after,
 .gg-trash::before {
-    content: "";
+    content: '';
     display: block;
     box-sizing: border-box;
-    position: absolute
+    position: absolute;
 }
 
 .gg-trash::after {
@@ -184,7 +181,7 @@ button:focus {
     width: 16px;
     height: 2px;
     top: -4px;
-    left: -5px
+    left: -5px;
 }
 
 .gg-trash::before {
@@ -195,53 +192,88 @@ button:focus {
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
     top: -7px;
-    left: -2px
+    left: -2px;
 }
 
 .login--container {
+    width: 400px;
+    background-color: rgba(255, 255, 255, 0.13);
     position: absolute;
     left: 50%;
-    top: 45%;
+    top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    padding: 50px 35px;
+}
+
+.login--form * {
+    font-family: 'Karla', 'sans-serif';
+    letter-spacing: 0.5px;
+    outline: none;
+    border: none;
 }
 
 .login--header {
-    margin: 50px;
+    margin: 20px;
+    margin-top: 5px;
     text-align: center;
-    font-size: 50px;
+    font-size: 35px;
 }
 
-.login--btnset {
+.input--label {
+    display: block;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.login--input {
+    display: block;
+    height: 50px;
+    width: 100%;
+    background-color: rgba(48, 42, 42, 0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.auth--btnset {
+    margin: 20px;
     justify-content: center;
     align-items: center;
     display: flex;
     text-align: center;
 }
 
-.login--btn,
-.register--btn {
+#login--btn,
+#signup--btn {
     cursor: pointer;
-    background-color: #4A4E74;
     margin: 10px;
+    margin-top: 20px;
     padding: 1rem;
-    border: none;
     width: 200px;
     border-radius: 3px;
     font-weight: 600;
-    transition: 0.2s;
+    transition: 0.25s;
 }
 
-.register--btn {
-    color: white;
-}
-
-.login--btn {
+.active--btn {
     background-color: white;
-    border: 1px solid #4A4E74;
+    border: 1px solid #4a4e74;
 }
 
-.login--btn:hover {
+.active--btn:hover {
     color: white;
-    background-color: #4A4E74;
+    background-color: #4a4e74;
+}
+
+.inactive--btn {
+    color: white;
+    background-color: #4a4e74;
 }
