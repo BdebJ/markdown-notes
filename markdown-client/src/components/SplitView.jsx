@@ -1,9 +1,4 @@
-import {
-    fetchNotes,
-    createNewNote,
-    updateNoteText,
-    deleteNoteById,
-} from '../util/firebase_utility';
+import { fetchNotes, createNewNote, updateNoteText, deleteNoteById } from '../util/backendUtils';
 import { useEffect, useState } from 'react';
 
 import Split from 'react-split';
@@ -20,8 +15,8 @@ export default function SplitView() {
     const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
     useEffect(() => {
-        const unsubscribe = fetchNotes(setNotes);
-        return unsubscribe;
+        fetchNotes(setNotes);
+        //to do add mechanism to handle notes retrieval failure
     }, []);
 
     useEffect(() => {
@@ -43,15 +38,27 @@ export default function SplitView() {
             }
         }, 500);
         return () => clearTimeout(timeoutId);
+        //to do add mechanism to handle updation failure
     }, [currentNote, currentNoteId, tempNoteText]);
 
     const createNote = async () => {
         const newNoteId = await createNewNote();
+        fetchNotes(setNotes);
         setCurrentNoteId(newNoteId);
+        //to do add mechanism to handle creation failure
     };
 
     const deleteNote = async (noteId) => {
+        setNotes((prevNotes) => {
+            const filteredNotes = prevNotes.filter((note) => note.id !== noteId);
+            const firstNoteId =
+                currentNoteId === noteId ? filteredNotes[0]?.id || '' : currentNoteId;
+            setCurrentNoteId(firstNoteId);
+            return filteredNotes;
+        });
+
         await deleteNoteById(noteId);
+        // to do: add mechanism to handle deletion failure
     };
 
     return notes.length > 0 ? (
