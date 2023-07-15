@@ -34,9 +34,17 @@ export default function SplitView() {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (currentNote && tempNoteText !== currentNote.body) {
+                setNotes((prevNotes) => {
+                    return prevNotes.map((note) => {
+                        if (note.id === currentNoteId) {
+                            return { ...note, body: tempNoteText, updatedAt: Date.now() };
+                        }
+                        return note;
+                    });
+                });
                 updateNoteText(currentNoteId, tempNoteText);
             }
-        }, 500);
+        }, 250);
         return () => clearTimeout(timeoutId);
         //to do add mechanism to handle updation failure
     }, [currentNote, currentNoteId, tempNoteText]);
@@ -63,7 +71,7 @@ export default function SplitView() {
 
     return notes.length > 0 ? (
         <>
-            <Split sizes={[20, 80]} direction="horizontal" className="split">
+            <Split sizes={[15, 85]} direction="horizontal" className="split">
                 <Sidebar
                     notes={sortedNotes}
                     currentNote={currentNote}
