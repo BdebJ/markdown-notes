@@ -265,6 +265,7 @@ button:focus {
 }
 
 .elegant--btn {
+    color: #4a4e74;
     background-color: white;
     border: 1px solid #4a4e74;
 }
@@ -274,8 +275,14 @@ button:focus {
     background-color: #4a4e74;
 }
 
-.flat--btn {
+.flat--btn,
+.elegantflat--btn {
     color: white;
     background-color: #4a4e74;
 }
 
+.elegantflat--btn:hover {
+    color: #4a4e74;
+    background-color: white;
+    border: 1px solid #4a4e74;
+}

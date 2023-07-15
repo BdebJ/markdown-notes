@@ -40,14 +40,24 @@ const ConfirmPasswordLabel = ({ confirmPassword, formDataChangeHandler }) => (
     </>
 );
 
-const LoginButton = ({ handleLogin }) => (
-    <button type="button" className="auth--btn elegant--btn" id="login--btn" onClick={handleLogin}>
+const LoginButton = ({ handleLogin, style = 'elegant' }) => (
+    <button
+        type="button"
+        className={`auth--btn ${style}--btn`}
+        id="login--btn"
+        onClick={handleLogin}
+    >
         Login
     </button>
 );
 
-const SignupButton = ({ handleSignup }) => (
-    <button type="button" className="auth--btn flat--btn" id="signup--btn" onClick={handleSignup}>
+const SignupButton = ({ handleSignup, style = 'flat' }) => (
+    <button
+        type="button"
+        className={`auth--btn ${style}--btn`}
+        id="signup--btn"
+        onClick={handleSignup}
+    >
         Sign up
     </button>
 );

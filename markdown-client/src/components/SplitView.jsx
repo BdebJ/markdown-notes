@@ -1,4 +1,9 @@
-import { fetchNotes, createNewNote, updateNoteText, deleteNoteById } from '../util/firebase_utility';
+import {
+    fetchNotes,
+    createNewNote,
+    updateNoteText,
+    deleteNoteById,
+} from '../util/firebase_utility';
 import { useEffect, useState } from 'react';
 
 import Split from 'react-split';

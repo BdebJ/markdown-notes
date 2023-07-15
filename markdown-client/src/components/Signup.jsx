@@ -43,7 +43,7 @@ export default function Signup() {
                     />
 
                     <div className="auth--btnset">
-                        <SignupButton handleSignup={handleSignup} />
+                        <SignupButton style='elegantflat' handleSignup={handleSignup} />
                     </div>
                 </form>
             </div>
