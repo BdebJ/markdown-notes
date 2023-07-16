@@ -1,6 +1,8 @@
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 export async function fetchNotes(setNotes) {
     try {
-        const response = await fetch('http://localhost:80/notes');
+        const response = await fetch(`${BACKEND_URL}/notes`);
         if (!response.ok) {
             throw new Error('Failed to fetch notes');
         }
@@ -13,7 +15,7 @@ export async function fetchNotes(setNotes) {
 
 export async function createNewNote() {
     try {
-        const response = await fetch('http://localhost:80/notes', {
+        const response = await fetch(`${BACKEND_URL}/notes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +36,7 @@ export async function createNewNote() {
 
 export async function updateNoteText(noteId, text) {
     try {
-        const response = await fetch(`http://localhost:80/notes/${noteId}`, {
+        const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +58,7 @@ export async function updateNoteText(noteId, text) {
 
 export async function deleteNoteById(noteId) {
     try {
-        const response = await fetch(`http://localhost:80/notes/${noteId}`, {
+        const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
             method: 'DELETE',
         });
 

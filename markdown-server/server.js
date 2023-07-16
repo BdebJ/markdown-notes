@@ -8,14 +8,19 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
+const PORT = process.env.PORT || 8888;
+const FIRESTORE_COLLECTION = 'notes';
+
 // Initialize Firestore
 const firestore = new Firestore({
     projectId: process.env.FIREBASE_PROJECT_ID,
-    keyFilename: process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH,
+    credentials: {
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+        private_key: Buffer.from(process.env.FIREBASE_PRIVATE_KEY_BASE64, 'base64')
+            .toString()
+            .replace(/\\n/g, '\n'),
+    },
 });
-
-const PORT = process.env.PORT;
-const FIRESTORE_COLLECTION = 'notes';
 
 // Fetch Notes - GET /notes
 app.get('/notes', async (req, res) => {

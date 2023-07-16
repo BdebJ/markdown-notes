@@ -5,7 +5,10 @@ export default function Sidebar({ notes, currentNote, setCurrentNoteId, newNote,
                 className={`title ${note.id === currentNote.id ? 'selected-note' : ''}`}
                 onClick={() => setCurrentNoteId(note.id)}
             >
-                <h4 className="text-snippet">{note.body.split('\n')[0]}</h4>
+                <h4 className="text-snippet">
+                    {note.body.split('\n')[0] !== '' ? note.body.split('\n')[0] : 'No Content'}
+                </h4>
+
                 <button className="delete-btn" onClick={() => deleteNote(note.id)}>
                     <i className="gg-trash trash-icon"></i>
                 </button>
