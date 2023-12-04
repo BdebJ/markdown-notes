@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { Firestore } from '@google-cloud/firestore/build/src/index.js';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const app = express();
 dotenv.config();
@@ -9,27 +9,42 @@ app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT || 8888;
-const FIRESTORE_COLLECTION = 'notes';
+const username = process.env.MONGO_USERNAME;
+const password = process.env.MONGO_PASSWORD;
+const host = process.env.MONGO_HOST;
+const dbname = process.env.MONGO_DATABASE;
+const collname = process.env.MONGO_COLLECTION;
 
-// Initialize Firestore
-const firestore = new Firestore({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    credentials: {
-        client_email: process.env.FIREBASE_CLIENT_EMAIL,
-        private_key: Buffer.from(process.env.FIREBASE_PRIVATE_KEY_BASE64, 'base64')
-            .toString()
-            .replace(/\\n/g, '\n'),
-    },
-});
+// Initialize Mongo
+const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri);
+
+async function initializeDBConnection() {
+    try {
+        await client.connect();
+        console.log(`Connected to database at ${new Date().toUTCString()}`);
+    } catch (error) {
+        console.error('Error connecting to database:', error);
+        process.exit(1);
+    }
+}
+
+initializeDBConnection();
+
+const database = client.db(dbname);
+const collection = database.collection(collname);
 
 // Fetch Notes - GET /notes
 app.get('/notes', async (req, res) => {
     try {
-        const snapshot = await firestore.collection(FIRESTORE_COLLECTION).get();
-        const notesArr = snapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-        }));
+        const notesCollection = await collection.find({}).toArray();
+        const notesArr = notesCollection.map((note) => {
+            const { _id, ...rest } = note;
+            return {
+                id: _id,
+                ...rest,
+            };
+        });
         res.json(notesArr);
     } catch (error) {
         console.error('Error fetching notes:', error);
@@ -45,42 +60,37 @@ app.post('/notes', async (req, res) => {
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
-        const docRef = await firestore.collection(FIRESTORE_COLLECTION).add(newNote);
-        res.json({ id: docRef.id });
+        const insertRes = await collection.insertOne(newNote);
+        res.json({ id: insertRes.insertedId });
     } catch (error) {
         console.error('Error creating new note:', error);
         res.status(500).json({ error: 'Failed to create new note' });
     }
 });
 
-// //Testing
-// app.post('/notes', async (req, res) => {
-//     try {
-//         const newNote = {
-//             body: '',
-//             createdAt: Date.now(),
-//             updatedAt: Date.now(),
-//         };
-//         const docRef = await firestore.collection(FIRESTORE_COLLECTION).add(newNote);
-
-//         await docRef.update({ body: docRef.id });
-
-//         const updatedNote = await docRef.get();
-
-//         res.json({ id: updatedNote.id });
-//     } catch (error) {
-//         console.error('Error creating new note:', error);
-//         res.status(500).json({ error: 'Failed to create new note' });
-//     }
-// });
-
 // Update Note Text - PUT /notes/:noteId
 app.put('/notes/:noteId', async (req, res) => {
     try {
         const { noteId } = req.params;
-        const { text } = req.body;
-        const docRef = firestore.collection(FIRESTORE_COLLECTION).doc(noteId);
-        await docRef.update({ body: text, updatedAt: Date.now() });
+        const { updatedText } = req.body;
+
+        if (!ObjectId.isValid(noteId)) {
+            return res.status(400).json({ error: 'Invalid noteId format' });
+        }
+
+        const query = { _id: new ObjectId(noteId) };
+        const updateDoc = {
+            $set: {
+                body: updatedText,
+                updatedAt: Date.now(),
+            },
+        };
+        const updateResult = await collection.updateOne(query, updateDoc);
+
+        if (updateResult.matchedCount === 0) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+
         res.json({ message: 'Note updated successfully' });
     } catch (error) {
         console.error('Error updating note text:', error);
@@ -92,8 +102,18 @@ app.put('/notes/:noteId', async (req, res) => {
 app.delete('/notes/:noteId', async (req, res) => {
     try {
         const { noteId } = req.params;
-        const docRef = firestore.collection(FIRESTORE_COLLECTION).doc(noteId);
-        await docRef.delete();
+
+        if (!ObjectId.isValid(noteId)) {
+            return res.status(400).json({ error: 'Invalid noteId format' });
+        }
+
+        const deleteQuery = { _id: new ObjectId(noteId) };
+        const deleteResult = await collection.deleteOne(deleteQuery);
+
+        if (deleteResult.matchedCount === 0) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+
         res.json({ message: 'Note deleted successfully' });
     } catch (error) {
         console.error('Error deleting note:', error);

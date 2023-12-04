@@ -34,14 +34,14 @@ export async function createNewNote() {
     }
 }
 
-export async function updateNoteText(noteId, text) {
+export async function updateNoteText(noteId, updatedText) {
     try {
         const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ updatedText }),
         });
 
         if (!response.ok) {
