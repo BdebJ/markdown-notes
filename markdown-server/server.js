@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 8888;
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
-const dbname = process.env.MONGO_DATABASE;
-const collname = process.env.MONGO_COLLECTION;
+const notesdbname = process.env.MONGO_DATABASE;
+const notescollname = process.env.MONGO_NOTES_COLLECTION;
 
 // Initialize Mongo
 const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
@@ -31,14 +31,14 @@ async function initializeDBConnection() {
 
 initializeDBConnection();
 
-const database = client.db(dbname);
-const collection = database.collection(collname);
+const database = client.db(notesdbname);
+const notesCollection = database.collection(notescollname);
 
 // Fetch Notes - GET /notes
 app.get('/notes', async (req, res) => {
     try {
-        const notesCollection = await collection.find({}).toArray();
-        const notesArr = notesCollection.map((note) => {
+        const notesCollectionArr = await notesCollection.find({}).toArray();
+        const notesArr = notesCollectionArr.map((note) => {
             const { _id, ...rest } = note;
             return {
                 id: _id,
@@ -60,7 +60,7 @@ app.post('/notes', async (req, res) => {
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
-        const insertRes = await collection.insertOne(newNote);
+        const insertRes = await notesCollection.insertOne(newNote);
         res.json({ id: insertRes.insertedId });
     } catch (error) {
         console.error('Error creating new note:', error);
@@ -85,7 +85,7 @@ app.put('/notes/:noteId', async (req, res) => {
                 updatedAt: Date.now(),
             },
         };
-        const updateResult = await collection.updateOne(query, updateDoc);
+        const updateResult = await notesCollection.updateOne(query, updateDoc);
 
         if (updateResult.matchedCount === 0) {
             return res.status(404).json({ error: 'Note not found' });
@@ -108,7 +108,7 @@ app.delete('/notes/:noteId', async (req, res) => {
         }
 
         const deleteQuery = { _id: new ObjectId(noteId) };
-        const deleteResult = await collection.deleteOne(deleteQuery);
+        const deleteResult = await notesCollection.deleteOne(deleteQuery);
 
         if (deleteResult.matchedCount === 0) {
             return res.status(404).json({ error: 'Note not found' });
