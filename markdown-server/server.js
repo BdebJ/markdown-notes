@@ -1,5 +1,7 @@
+import jwt from 'jsonwebtoken';
 import express from 'express';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
 
@@ -8,12 +10,14 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 8888;
+const port = process.env.PORT || 8888;
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
-const notesdbname = process.env.MONGO_DATABASE;
+const dbname = process.env.MONGO_DATABASE;
 const notescollname = process.env.MONGO_NOTES_COLLECTION;
+const usercollname = process.env.MONGO_USER_COLLECTION;
+const secretaccesskey = process.env.SECRET_ACCESS_TOKEN;
 
 // Initialize Mongo
 const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
@@ -31,11 +35,90 @@ async function initializeDBConnection() {
 
 initializeDBConnection();
 
-const database = client.db(notesdbname);
+const database = client.db(dbname);
 const notesCollection = database.collection(notescollname);
+const userCollection = database.collection(usercollname);
+
+// Auth Helper Functions
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.status(401).json({ error: 'User not authorized' });
+
+    jwt.verify(token, secretaccesskey, (err, user) => {
+        if (err) return res.status(403).json({ error: 'Token no longer valid' });
+        req.user = user;
+        next();
+    });
+}
+
+async function findUserByUsername(username) {
+    return await userCollection.findOne({ username });
+}
+
+// User Registration
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Check for duplicate username
+        const existingUser = await findUserByUsername(username);
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already taken' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = { username, password: hashedPassword };
+        await userCollection.insertOne(newUser);
+
+        res.json({ message: 'User registered successfully' });
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({ error: 'Failed to register user' });
+    }
+});
+
+//User Login
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await findUserByUsername(username);
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
+        const accessToken = jwt.sign(
+            { userId: user._id, username: user.username },
+            secretaccesskey,
+            { expiresIn: '4h' }
+        );
+        res.json({ accessToken });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).json({ error: 'Failed to log in' });
+    }
+});
+
+// Token validation
+app.post('/validate-token', authenticateToken, async (req, res) => {
+    try {
+        const { userId, username } = req.user;
+        const user = await findUserByUsername(username);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Token is valid, return user information or any other relevant data
+        res.json({ userId, username });
+    } catch (error) {
+        console.error('Error validating token:', error);
+        res.status(500).json({ error: 'Failed to validate token' });
+    }
+});
 
 // Fetch Notes - GET /notes
-app.get('/notes', async (req, res) => {
+app.get('/notes', authenticateToken, async (req, res) => {
     try {
         const notesCollectionArr = await notesCollection.find({}).toArray();
         const notesArr = notesCollectionArr.map((note) => {
@@ -45,6 +128,7 @@ app.get('/notes', async (req, res) => {
                 ...rest,
             };
         });
+
         res.json(notesArr);
     } catch (error) {
         console.error('Error fetching notes:', error);
@@ -53,13 +137,14 @@ app.get('/notes', async (req, res) => {
 });
 
 // Create New Note - POST /notes
-app.post('/notes', async (req, res) => {
+app.post('/notes', authenticateToken, async (req, res) => {
     try {
         const newNote = {
             body: '#Type your markdown text here',
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
+
         const insertRes = await notesCollection.insertOne(newNote);
         res.json({ id: insertRes.insertedId });
     } catch (error) {
@@ -68,8 +153,8 @@ app.post('/notes', async (req, res) => {
     }
 });
 
-// Update Note Text - PUT /notes/:noteId
-app.put('/notes/:noteId', async (req, res) => {
+// Update Note Text - POST /notes/:noteId
+app.post('/notes/:noteId', authenticateToken, async (req, res) => {
     try {
         const { noteId } = req.params;
         const { updatedText } = req.body;
@@ -99,7 +184,7 @@ app.put('/notes/:noteId', async (req, res) => {
 });
 
 // Delete Note By ID - DELETE /notes/:noteId
-app.delete('/notes/:noteId', async (req, res) => {
+app.delete('/notes/:noteId', authenticateToken, async (req, res) => {
     try {
         const { noteId } = req.params;
 
@@ -121,6 +206,6 @@ app.delete('/notes/:noteId', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });

@@ -1,8 +1,92 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+export async function registerUser(username, password) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Registration failed: ${errorData.error}`);
+        }
+
+        const responseData = await response.json();
+        console.log('message:', responseData.message);
+    } catch (error) {
+        console.error('Error registering user:', error);
+    }
+}
+
+export async function loginUser(username, password) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Login failed: ${errorData.error}`);
+        }
+
+        // Successful login
+        const responseData = await response.json();
+        const accessToken = responseData.accessToken;
+        console.log('Login successful. Access Token:', accessToken);
+
+        localStorage.setItem('accessToken', accessToken);
+    } catch (error) {
+        console.error('Error logging in:', error.message);
+        throw error; // Re-throw the error for the caller to handle if needed
+    }
+}
+
+//For use later to persist user isntead of relogin
+export async function validateToken(token) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/validate-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Login failed: ${errorData.error}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Valodation successful:', responseData);
+    } catch (error) {
+        console.error('Error logging in:', error.message);
+    }
+}
+
 export async function fetchNotes(setNotes) {
     try {
-        const response = await fetch(`${BACKEND_URL}/notes`);
+        const response = await fetch(`${BACKEND_URL}/notes`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch notes');
         }
@@ -19,6 +103,7 @@ export async function createNewNote() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
         });
 
@@ -37,9 +122,10 @@ export async function createNewNote() {
 export async function updateNoteText(noteId, updatedText) {
     try {
         const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
             body: JSON.stringify({ updatedText }),
         });
@@ -60,6 +146,9 @@ export async function deleteNoteById(noteId) {
     try {
         const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
             method: 'DELETE',
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
         });
 
         if (!response.ok) {

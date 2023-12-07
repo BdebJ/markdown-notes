@@ -1,7 +1,16 @@
 import { useState } from 'react';
-import { EmailLabel, PasswordLabel, ConfirmPasswordLabel, SignupButton } from './AuthComponents';
+import { useNavigate } from 'react-router-dom';
+import {
+    EmailLabel,
+    PasswordLabel,
+    ConfirmPasswordLabel,
+    SignupButton,
+    LoginButton,
+} from './AuthComponents';
+import { registerUser } from '../util/backendUtils';
 
 export default function Signup() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username_input: '',
         password_input: '',
@@ -18,7 +27,19 @@ export default function Signup() {
 
     const handleSignup = (event) => {
         event.preventDefault();
-        //Handle signup
+
+        registerUser(formData.username_input, formData.password_input)
+            .then((res) => {
+                navigate('/login');
+            })
+            .catch((err) => {
+                console.error('Failed registration. Error:', err);
+            });
+    };
+
+    const redirectLogin = (event) => {
+        event.preventDefault();
+        navigate('/login');
     };
 
     return (
@@ -43,7 +64,16 @@ export default function Signup() {
                     />
 
                     <div className="auth--btnset">
-                        <SignupButton style='elegantflat' handleSignup={handleSignup} />
+                        <SignupButton style="elegantflat" handleSignup={handleSignup} />
+                    </div>
+
+                    <div style={{ textAlign: 'center', margin: '50px 0' }}>
+                        <h4 style={{ margin: '0' }}>
+                            Already have an account?
+                            <br />
+                            Login in below
+                        </h4>
+                        <LoginButton handleLogin={redirectLogin} />
                     </div>
                 </form>
             </div>

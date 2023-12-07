@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { loginUser } from '../util/backendUtils';
 import { EmailLabel, PasswordLabel, LoginButton, SignupButton } from './AuthComponents';
 
 export default function Login() {
@@ -17,10 +17,17 @@ export default function Login() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        //Handle Login
+
+        loginUser(formData.username_input, formData.password_input)
+            .then((res) => {
+                navigate('/');
+            })
+            .catch((err) => {
+                console.error('Failed login. Error:', err);
+            });
     };
 
-    const handleSignup = (event) => {
+    const redirectSignup = (event) => {
         event.preventDefault();
         navigate('/signup');
     };
@@ -43,7 +50,7 @@ export default function Login() {
 
                     <div className="auth--btnset">
                         <LoginButton handleLogin={handleLogin} />
-                        <SignupButton handleSignup={handleSignup} />
+                        <SignupButton handleSignup={redirectSignup} />
                     </div>
                 </form>
             </div>
