@@ -46,7 +46,6 @@ export async function loginUser(username, password) {
         // Successful login
         const responseData = await response.json();
         const accessToken = responseData.accessToken;
-        console.log('Login successful. Access Token:', accessToken);
 
         localStorage.setItem('accessToken', accessToken);
     } catch (error) {
@@ -88,6 +87,8 @@ export async function fetchNotes(setNotes) {
             },
         });
         if (!response.ok) {
+            // To do add message to user to relogin as login expires(for every fetch method?)
+            if (response.status == 403) window.location.href = '/login';
             throw new Error('Failed to fetch notes');
         }
         const notesArr = await response.json();
@@ -108,6 +109,7 @@ export async function createNewNote() {
         });
 
         if (!response.ok) {
+            if (response.status == 403) window.location.href = '/login';
             throw new Error('Failed to create new note');
         }
 
@@ -131,6 +133,7 @@ export async function updateNoteText(noteId, updatedText) {
         });
 
         if (!response.ok) {
+            if (response.status == 403) window.location.href = '/login';
             throw new Error('Failed to update note text');
         }
 
@@ -152,6 +155,7 @@ export async function deleteNoteById(noteId) {
         });
 
         if (!response.ok) {
+            if (response.status == 403) window.location.href = '/login';
             throw new Error('Failed to delete note');
         }
 

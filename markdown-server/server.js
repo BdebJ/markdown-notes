@@ -120,7 +120,9 @@ app.post('/validate-token', authenticateToken, async (req, res) => {
 // Fetch Notes - GET /notes
 app.get('/notes', authenticateToken, async (req, res) => {
     try {
-        const notesCollectionArr = await notesCollection.find({}).toArray();
+        const notesCollectionArr = await notesCollection
+            .find({ ownerId: req.user.userId })
+            .toArray();
         const notesArr = notesCollectionArr.map((note) => {
             const { _id, ...rest } = note;
             return {
@@ -141,6 +143,7 @@ app.post('/notes', authenticateToken, async (req, res) => {
     try {
         const newNote = {
             body: '#Type your markdown text here',
+            ownerId: req.user.userId,
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
