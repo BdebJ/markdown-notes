@@ -1,10 +1,17 @@
-import { fetchNotes, createNewNote, updateNoteText, deleteNoteById } from '../util/backendUtils';
+import {
+    fetchNotes,
+    createNewNote,
+    updateNoteText,
+    deleteNoteById,
+    logoutUser,
+} from '../util/backendUtils';
 import { useEffect, useState } from 'react';
 
 import Split from 'react-split';
 import Sidebar from './Sidebar';
 import Editor from './Editor';
 import NoNotes from './NoNotes';
+import { LogoutButton } from './AuthComponents';
 
 export default function SplitView() {
     const [notes, setNotes] = useState([]);
@@ -15,8 +22,13 @@ export default function SplitView() {
     const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
     useEffect(() => {
-        fetchNotes(setNotes);
-        //to do add mechanism to handle notes retrieval failure
+        fetchNotes()
+            .then((notesArr) => {
+                setNotes(notesArr);
+            })
+            .catch((err) => {
+                console.log('Error: ', err);
+            });
     }, []);
 
     useEffect(() => {
@@ -51,7 +63,13 @@ export default function SplitView() {
 
     const createNote = async () => {
         const newNoteId = await createNewNote();
-        fetchNotes(setNotes);
+        fetchNotes()
+            .then((notesArr) => {
+                setNotes(notesArr);
+            })
+            .catch((err) => {
+                console.log('Error: ', err);
+            });
         setCurrentNoteId(newNoteId);
         //to do add mechanism to handle creation failure
     };
@@ -71,6 +89,7 @@ export default function SplitView() {
 
     return notes.length > 0 ? (
         <>
+            <LogoutButton handleLogout={logoutUser} />
             <Split sizes={[15, 85]} direction="horizontal" className="split">
                 <Sidebar
                     notes={sortedNotes}

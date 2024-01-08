@@ -62,4 +62,15 @@ const SignupButton = ({ handleSignup, style = 'flat' }) => (
     </button>
 );
 
-export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, LoginButton, SignupButton };
+const LogoutButton = ({ handleLogout }) => (
+    <button
+        type="button"
+        className={`auth--btn elegant--btn`}
+        id="logout--btn"
+        onClick={handleLogout}
+    >
+        Logout
+    </button>
+);
+
+export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, LoginButton, SignupButton, LogoutButton };

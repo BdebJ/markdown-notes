@@ -50,34 +50,10 @@ export async function loginUser(username, password) {
         localStorage.setItem('accessToken', accessToken);
     } catch (error) {
         console.error('Error logging in:', error.message);
-        throw error; // Re-throw the error for the caller to handle if needed
     }
 }
 
-//For use later to persist user isntead of relogin
-export async function validateToken(token) {
-    try {
-        const response = await fetch(`${BACKEND_URL}/validate-token`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Login failed: ${errorData.error}`);
-        }
-
-        const responseData = await response.json();
-        console.log('Valodation successful:', responseData);
-    } catch (error) {
-        console.error('Error logging in:', error.message);
-    }
-}
-
-export async function fetchNotes(setNotes) {
+export async function fetchNotes() {
     try {
         const response = await fetch(`${BACKEND_URL}/notes`, {
             method: 'GET',
@@ -87,12 +63,11 @@ export async function fetchNotes(setNotes) {
             },
         });
         if (!response.ok) {
-            // To do add message to user to relogin as login expires(for every fetch method?)
             if (response.status == 403) window.location.href = '/login';
             throw new Error('Failed to fetch notes');
         }
         const notesArr = await response.json();
-        setNotes(notesArr);
+        return notesArr;
     } catch (error) {
         console.error('Error fetching notes:', error);
     }
@@ -164,5 +139,14 @@ export async function deleteNoteById(noteId) {
     } catch (error) {
         console.error('Error deleting note:', error);
         return null;
+    }
+}
+
+export async function logoutUser() {
+    try {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+    } catch (error) {
+        console.error('Error logging out:', error);
     }
 }

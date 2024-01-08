@@ -20,7 +20,7 @@ const usercollname = process.env.MONGO_USER_COLLECTION;
 const secretaccesskey = process.env.SECRET_ACCESS_TOKEN;
 
 // Initialize Mongo
-const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
+const uri = `mongodb://${username}:${password}@${host}`;
 const client = new MongoClient(uri);
 
 async function initializeDBConnection() {
@@ -96,24 +96,6 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'Failed to log in' });
-    }
-});
-
-// Token validation
-app.post('/validate-token', authenticateToken, async (req, res) => {
-    try {
-        const { userId, username } = req.user;
-        const user = await findUserByUsername(username);
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        // Token is valid, return user information or any other relevant data
-        res.json({ userId, username });
-    } catch (error) {
-        console.error('Error validating token:', error);
-        res.status(500).json({ error: 'Failed to validate token' });
     }
 });
 
