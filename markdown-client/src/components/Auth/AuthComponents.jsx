@@ -9,12 +9,13 @@ const EmailLabel = ({ email, formDataChangeHandler }) => (
             placeholder="Email"
             value={email}
             id="username_input"
+            autoComplete="username"
             onChange={formDataChangeHandler}
         />
     </>
 );
 
-const PasswordLabel = ({ password, formDataChangeHandler }) => (
+const PasswordLabel = ({ password, formDataChangeHandler, autoComplete = 'current-password' }) => (
     <>
         <label className="input--label">Password</label>
         <input
@@ -23,6 +24,7 @@ const PasswordLabel = ({ password, formDataChangeHandler }) => (
             placeholder="Password"
             value={password}
             id="password_input"
+            autoComplete={autoComplete}
             onChange={formDataChangeHandler}
         />
     </>
@@ -37,6 +39,7 @@ const ConfirmPasswordLabel = ({ confirmPassword, formDataChangeHandler }) => (
             placeholder="Password"
             value={confirmPassword}
             id="confirm_password_input"
+            autoComplete="new-password"
             onChange={formDataChangeHandler}
         />
     </>

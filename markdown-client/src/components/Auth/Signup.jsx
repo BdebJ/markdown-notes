@@ -52,6 +52,7 @@ export default function Signup() {
                     <PasswordLabel
                         password={formData.password_input}
                         formDataChangeHandler={formDataChangeHandler}
+                        autoComplete="new-password"
                     />
 
                     <ConfirmPasswordLabel
