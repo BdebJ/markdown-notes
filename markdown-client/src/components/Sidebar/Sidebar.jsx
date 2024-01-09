@@ -1,3 +1,5 @@
+import './Sidebar.css';
+
 export default function Sidebar({ notes, currentNote, setCurrentNoteId, newNote, deleteNote }) {
     const noteElements = notes.map((note, index) => (
         <div key={note.id}>

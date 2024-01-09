@@ -1,13 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    EmailLabel,
-    PasswordLabel,
-    ConfirmPasswordLabel,
-    SignupButton,
-    LoginButton,
-} from './AuthComponents';
-import { registerUser } from '../util/backendUtils';
+import { EmailLabel, PasswordLabel, ConfirmPasswordLabel, StyledButton } from './AuthComponents';
+import { registerUser } from '../../util/backendUtils';
+
+import './AuthPages.css';
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -64,7 +60,12 @@ export default function Signup() {
                     />
 
                     <div className="auth--btnset">
-                        <SignupButton style="elegantflat" handleSignup={handleSignup} />
+                        <StyledButton
+                            text="Sign up"
+                            style="elegantflat"
+                            id="signup--btn"
+                            onClick={handleSignup}
+                        />
                     </div>
 
                     <div style={{ textAlign: 'center', margin: '50px 0' }}>
@@ -73,7 +74,12 @@ export default function Signup() {
                             <br />
                             Login in below
                         </h4>
-                        <LoginButton handleLogin={redirectLogin} />
+                        <StyledButton
+                            text="Login"
+                            style="elegant"
+                            id="login--btn"
+                            onClick={redirectLogin}
+                        />
                     </div>
                 </form>
             </div>

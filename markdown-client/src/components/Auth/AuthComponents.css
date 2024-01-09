@@ -1,0 +1,67 @@
+.input--label {
+    display: block;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.auth--input {
+    display: block;
+    height: 50px;
+    width: 100%;
+    background-color: rgba(48, 42, 42, 0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    border: none;
+}
+
+.auth--btn {
+    cursor: pointer;
+    margin: 10px;
+    margin-top: 20px;
+    padding: 1rem;
+    width: 200px;
+    border-radius: 3px;
+    font-weight: 600;
+    transition: 0.25s;
+    outline: none;
+    border: none;
+}
+
+.elegant--btn {
+    color: #4a4e74;
+    background-color: white;
+    border: 1px solid #4a4e74;
+}
+
+.elegant--btn:hover {
+    color: white;
+    background-color: #4a4e74;
+}
+
+.flat--btn,
+.elegantflat--btn {
+    color: white;
+    background-color: #4a4e74;
+}
+
+.elegantflat--btn:hover {
+    color: #4a4e74;
+    background-color: white;
+    border: 1px solid #4a4e74;
+}
+
+#logout--btn {
+    position: absolute;
+    right: 0;
+    top: -15;
+    z-index: 100;
+    width: 100px;
+    height: 30px;
+    padding: 5px;
+    text-align: center;
+}

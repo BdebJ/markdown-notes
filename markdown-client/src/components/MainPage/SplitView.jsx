@@ -4,14 +4,15 @@ import {
     updateNoteText,
     deleteNoteById,
     logoutUser,
-} from '../util/backendUtils';
+} from '../../util/backendUtils';
 import { useEffect, useState } from 'react';
 
+import './SplitView.css';
+
 import Split from 'react-split';
-import Sidebar from './Sidebar';
-import Editor from './Editor';
-import NoNotes from './NoNotes';
-import { LogoutButton } from './AuthComponents';
+import Sidebar from '../Sidebar/Sidebar';
+import Editor from '../Editor/Editor';
+import { StyledButton } from '../Auth/AuthComponents';
 
 export default function SplitView() {
     const [notes, setNotes] = useState([]);
@@ -89,7 +90,7 @@ export default function SplitView() {
 
     return notes.length > 0 ? (
         <>
-            <LogoutButton handleLogout={logoutUser} />
+            <StyledButton text="Logout" style="elegant" id="logout--btn" onClick={logoutUser} />
             <Split sizes={[15, 85]} direction="horizontal" className="split">
                 <Sidebar
                     notes={sortedNotes}
@@ -103,7 +104,13 @@ export default function SplitView() {
         </>
     ) : (
         <>
-            <NoNotes createNote={createNote} />
+            <StyledButton text="Logout" style="elegant" id="logout--btn" onClick={logoutUser} />
+            <div className="no--notes">
+                <h1>You have no notes</h1>
+                <button className="create--first--note" onClick={createNote}>
+                    Create one now
+                </button>
+            </div>
         </>
     );
 }

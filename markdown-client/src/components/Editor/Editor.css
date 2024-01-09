@@ -1,0 +1,8 @@
+.pane {
+    overflow-y: auto;
+}
+
+.editor {
+    width: 80%;
+    height: 100vh;
+}

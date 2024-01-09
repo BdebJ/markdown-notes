@@ -1,0 +1,18 @@
+.no--notes {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+.create--first--note {
+    cursor: pointer;
+    background-color: #4a4e74;
+    border: none;
+    color: white;
+    border-radius: 3px;
+    padding: 1rem;
+}

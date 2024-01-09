@@ -1,3 +1,5 @@
+import './AuthComponents.css';
+
 const EmailLabel = ({ email, formDataChangeHandler }) => (
     <>
         <label className="input--label">Email</label>
@@ -40,37 +42,10 @@ const ConfirmPasswordLabel = ({ confirmPassword, formDataChangeHandler }) => (
     </>
 );
 
-const LoginButton = ({ handleLogin, style = 'elegant' }) => (
-    <button
-        type="button"
-        className={`auth--btn ${style}--btn`}
-        id="login--btn"
-        onClick={handleLogin}
-    >
-        Login
+const StyledButton = ({ text, style = 'flat', id, onClick }) => (
+    <button type="button" className={`auth--btn ${style}--btn`} id={id} onClick={onClick}>
+        {text}
     </button>
 );
 
-const SignupButton = ({ handleSignup, style = 'flat' }) => (
-    <button
-        type="button"
-        className={`auth--btn ${style}--btn`}
-        id="signup--btn"
-        onClick={handleSignup}
-    >
-        Sign up
-    </button>
-);
-
-const LogoutButton = ({ handleLogout }) => (
-    <button
-        type="button"
-        className={`auth--btn elegant--btn`}
-        id="logout--btn"
-        onClick={handleLogout}
-    >
-        Logout
-    </button>
-);
-
-export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, LoginButton, SignupButton, LogoutButton };
+export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, StyledButton };
