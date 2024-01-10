@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { loginUser } from '../../util/backendUtils';
 import { EmailLabel, PasswordLabel, StyledButton } from '../Auth/AuthComponents';
 
@@ -24,8 +27,12 @@ export default function Login() {
             .then((res) => {
                 navigate('/');
             })
-            .catch((err) => {
-                console.error('Failed login. Error:', err);
+            .catch((rej) => {
+                if (rej instanceof TypeError && rej.message === 'Failed to fetch') {
+                    toast.error('Error: Unable to connect to server');
+                } else {
+                    toast.error(`Error: ${rej.error}`);
+                }
             });
     };
 
@@ -36,6 +43,7 @@ export default function Login() {
 
     return (
         <>
+            <ToastContainer />
             <div className="auth--container">
                 <form className="auth--form" onSubmit={handleLogin}>
                     <h1 className="auth--header">Markdown Notes</h1>

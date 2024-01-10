@@ -62,9 +62,7 @@ app.post('/register', async (req, res) => {
         const { username, password } = req.body;
         // Check username, password integrity
         if (password.length < 6 || username.length < 4) {
-            return res
-                .status(400)
-                .json({ message: 'Credentials validation failed for registration' });
+            return res.status(400).json({ error: 'Credentials strength validation failed' });
         }
         // Check for duplicate username
         const existingUser = await findUserByUsername(username);
@@ -87,12 +85,6 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        // Check username, password integrity
-        if (password.length < 6 || username.length < 4) {
-            return res
-                .status(400)
-                .json({ message: 'Credentials validation failed for registration' });
-        }
         const user = await findUserByUsername(username);
 
         if (!user || !(await bcrypt.compare(password, user.password))) {

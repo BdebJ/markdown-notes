@@ -14,14 +14,14 @@ export async function registerUser(username, password) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Registration failed: ${errorData.error}`);
+            const error = await response.json();
+            throw error;
         }
 
         const responseData = await response.json();
-        console.log('message:', responseData.message);
+        return responseData;
     } catch (error) {
-        console.error('Error registering user:', error);
+        throw error;
     }
 }
 
@@ -39,8 +39,8 @@ export async function loginUser(username, password) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Login failed: ${errorData.error}`);
+            const error = await response.json();
+            throw error;
         }
 
         // Successful login
@@ -49,7 +49,7 @@ export async function loginUser(username, password) {
 
         localStorage.setItem('accessToken', accessToken);
     } catch (error) {
-        console.error('Error logging in:', error.message);
+        throw error;
     }
 }
 

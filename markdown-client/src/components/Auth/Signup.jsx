@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { EmailLabel, PasswordLabel, ConfirmPasswordLabel, StyledButton } from './AuthComponents';
 import { registerUser } from '../../util/backendUtils';
-
 import './AuthPages.css';
 
 export default function Signup() {
@@ -26,10 +28,17 @@ export default function Signup() {
 
         registerUser(formData.username_input, formData.password_input)
             .then((res) => {
-                navigate('/login');
+                toast.info(res.message);
+                setTimeout(() => {
+                    navigate('/login');
+                }, 5000);
             })
-            .catch((err) => {
-                console.error('Failed registration. Error:', err);
+            .catch((rej) => {
+                if (rej instanceof TypeError && rej.message === 'Failed to fetch') {
+                    toast.error('Error: Unable to connect to server');
+                } else {
+                    toast.error(`Error: ${rej.error}`);
+                }
             });
     };
 
@@ -40,6 +49,7 @@ export default function Signup() {
 
     return (
         <>
+            <ToastContainer />
             <div className="auth--container">
                 <form className="auth--form" onSubmit={handleSignup}>
                     <h1 className="auth--header">Markdown Notes</h1>
