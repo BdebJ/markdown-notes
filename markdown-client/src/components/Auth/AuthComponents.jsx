@@ -1,3 +1,5 @@
+import './AuthComponents.css';
+
 const EmailLabel = ({ email, formDataChangeHandler }) => (
     <>
         <label className="input--label">Email</label>
@@ -7,12 +9,13 @@ const EmailLabel = ({ email, formDataChangeHandler }) => (
             placeholder="Email"
             value={email}
             id="username_input"
+            autoComplete="username"
             onChange={formDataChangeHandler}
         />
     </>
 );
 
-const PasswordLabel = ({ password, formDataChangeHandler }) => (
+const PasswordLabel = ({ password, formDataChangeHandler, autoComplete = 'current-password' }) => (
     <>
         <label className="input--label">Password</label>
         <input
@@ -21,6 +24,7 @@ const PasswordLabel = ({ password, formDataChangeHandler }) => (
             placeholder="Password"
             value={password}
             id="password_input"
+            autoComplete={autoComplete}
             onChange={formDataChangeHandler}
         />
     </>
@@ -35,31 +39,16 @@ const ConfirmPasswordLabel = ({ confirmPassword, formDataChangeHandler }) => (
             placeholder="Password"
             value={confirmPassword}
             id="confirm_password_input"
+            autoComplete="new-password"
             onChange={formDataChangeHandler}
         />
     </>
 );
 
-const LoginButton = ({ handleLogin, style = 'elegant' }) => (
-    <button
-        type="button"
-        className={`auth--btn ${style}--btn`}
-        id="login--btn"
-        onClick={handleLogin}
-    >
-        Login
+const StyledButton = ({ text, style = 'flat', id, onClick }) => (
+    <button type="button" className={`auth--btn ${style}--btn`} id={id} onClick={onClick}>
+        {text}
     </button>
 );
 
-const SignupButton = ({ handleSignup, style = 'flat' }) => (
-    <button
-        type="button"
-        className={`auth--btn ${style}--btn`}
-        id="signup--btn"
-        onClick={handleSignup}
-    >
-        Sign up
-    </button>
-);
-
-export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, LoginButton, SignupButton };
+export { EmailLabel, PasswordLabel, ConfirmPasswordLabel, StyledButton };

@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { EmailLabel, PasswordLabel, LoginButton, SignupButton } from './AuthComponents';
+import { loginUser } from '../../util/backendUtils';
+import { EmailLabel, PasswordLabel, StyledButton } from '../Auth/AuthComponents';
+import './AuthPages.css';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -17,16 +21,28 @@ export default function Login() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-        //Handle Login
+
+        loginUser(formData.username_input, formData.password_input)
+            .then((res) => {
+                navigate('/');
+            })
+            .catch((rej) => {
+                if (rej instanceof TypeError && rej.message === 'Failed to fetch') {
+                    toast.error('Error: Unable to connect to server');
+                } else {
+                    toast.error(`Error: ${rej.error}`);
+                }
+            });
     };
 
-    const handleSignup = (event) => {
+    const redirectSignup = (event) => {
         event.preventDefault();
         navigate('/signup');
     };
 
     return (
         <>
+            <ToastContainer />
             <div className="auth--container">
                 <form className="auth--form" onSubmit={handleLogin}>
                     <h1 className="auth--header">Markdown Notes</h1>
@@ -42,8 +58,18 @@ export default function Login() {
                     />
 
                     <div className="auth--btnset">
-                        <LoginButton handleLogin={handleLogin} />
-                        <SignupButton handleSignup={handleSignup} />
+                        <StyledButton
+                            text="Login"
+                            style="elegant"
+                            id="login--btn"
+                            onClick={handleLogin}
+                        />
+                        <StyledButton
+                            text="Sign up"
+                            style="flat"
+                            id="signup--btn"
+                            onClick={redirectSignup}
+                        />
                     </div>
                 </form>
             </div>
