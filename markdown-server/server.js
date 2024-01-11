@@ -119,7 +119,7 @@ app.get('/notes', authenticateToken, async (req, res) => {
         res.json(notesArr);
     } catch (error) {
         console.error('Error fetching notes:', error);
-        res.status(500).json({ error: 'Failed to fetch notes' });
+        res.status(500).json({ error: 'Failed to fetch notes from server' });
     }
 });
 
@@ -167,7 +167,7 @@ app.post('/notes/:noteId', authenticateToken, async (req, res) => {
         res.json({ message: 'Note updated successfully' });
     } catch (error) {
         console.error('Error updating note text:', error);
-        res.status(500).json({ error: 'Failed to update note text' });
+        res.status(500).json({ error: 'Failed to update note' });
     }
 });
 

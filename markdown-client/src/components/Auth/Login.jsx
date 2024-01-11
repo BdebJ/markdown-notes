@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { loginUser } from '../../util/backendUtils';
 import { EmailLabel, PasswordLabel, StyledButton } from '../Auth/AuthComponents';
-
 import './AuthPages.css';
 
 export default function Login() {

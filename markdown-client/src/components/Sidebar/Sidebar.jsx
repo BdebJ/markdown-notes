@@ -1,7 +1,7 @@
 import './Sidebar.css';
 
 export default function Sidebar({ notes, currentNote, setCurrentNoteId, newNote, deleteNote }) {
-    const noteElements = notes.map((note, index) => (
+    const noteElements = notes.map((note) => (
         <div key={note.id}>
             <div
                 className={`title ${note.id === currentNote.id ? 'selected-note' : ''}`}

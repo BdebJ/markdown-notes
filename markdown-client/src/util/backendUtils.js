@@ -12,12 +12,10 @@ export async function registerUser(username, password) {
                 password: password,
             }),
         });
-
         if (!response.ok) {
             const error = await response.json();
             throw error;
         }
-
         const responseData = await response.json();
         return responseData;
     } catch (error) {
@@ -37,13 +35,10 @@ export async function loginUser(username, password) {
                 password: password,
             }),
         });
-
         if (!response.ok) {
             const error = await response.json();
             throw error;
         }
-
-        // Successful login
         const responseData = await response.json();
         const accessToken = responseData.accessToken;
 
@@ -63,13 +58,17 @@ export async function fetchNotes() {
             },
         });
         if (!response.ok) {
-            if (response.status == 403) window.location.href = '/login';
-            throw new Error('Failed to fetch notes');
+            if (response.status == 403) {
+                window.location.href = '/login';
+                return;
+            }
+            const error = await response.json();
+            throw error;
         }
         const notesArr = await response.json();
         return notesArr;
     } catch (error) {
-        console.error('Error fetching notes:', error);
+        throw error;
     }
 }
 
@@ -82,17 +81,14 @@ export async function createNewNote() {
                 authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
         });
-
         if (!response.ok) {
-            if (response.status == 403) window.location.href = '/login';
-            throw new Error('Failed to create new note');
+            const error = await response.json();
+            throw error;
         }
-
         const data = await response.json();
         return data.id;
     } catch (error) {
-        console.error('Error creating new note:', error);
-        return null;
+        throw error;
     }
 }
 
@@ -106,17 +102,14 @@ export async function updateNoteText(noteId, updatedText) {
             },
             body: JSON.stringify({ updatedText }),
         });
-
         if (!response.ok) {
-            if (response.status == 403) window.location.href = '/login';
-            throw new Error('Failed to update note text');
+            const error = await response.json();
+            throw error;
         }
-
         const data = await response.json();
         return data.message;
     } catch (error) {
-        console.error('Error updating note text:', error);
-        return null;
+        throw error;
     }
 }
 
@@ -128,25 +121,18 @@ export async function deleteNoteById(noteId) {
                 authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
         });
-
         if (!response.ok) {
-            if (response.status == 403) window.location.href = '/login';
-            throw new Error('Failed to delete note');
+            const error = await response.json();
+            throw error;
         }
-
         const data = await response.json();
         return data.message;
     } catch (error) {
-        console.error('Error deleting note:', error);
-        return null;
+        throw error;
     }
 }
 
 export async function logoutUser() {
-    try {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/login';
-    } catch (error) {
-        console.error('Error logging out:', error);
-    }
+    localStorage.removeItem('accessToken');
+    window.location.href = '/login';
 }

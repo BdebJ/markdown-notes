@@ -1,3 +1,8 @@
+import Split from 'react-split';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import {
     fetchNotes,
     createNewNote,
@@ -5,14 +10,10 @@ import {
     deleteNoteById,
     logoutUser,
 } from '../../util/backendUtils';
-import { useEffect, useState } from 'react';
-
-import './SplitView.css';
-
-import Split from 'react-split';
 import Sidebar from '../Sidebar/Sidebar';
 import Editor from '../Editor/Editor';
 import { StyledButton } from '../Auth/AuthComponents';
+import './SplitView.css';
 
 export default function SplitView() {
     const [notes, setNotes] = useState([]);
@@ -27,8 +28,8 @@ export default function SplitView() {
             .then((notesArr) => {
                 setNotes(notesArr);
             })
-            .catch((err) => {
-                console.log('Error: ', err);
+            .catch((rej) => {
+                toast.error(`Error: ${rej.error}`);
             });
     }, []);
 
@@ -45,6 +46,7 @@ export default function SplitView() {
     }, [currentNote]);
 
     useEffect(() => {
+        let updateErrorFlag = false;
         const timeoutId = setTimeout(() => {
             if (currentNote && tempNoteText !== currentNote.body) {
                 setNotes((prevNotes) => {
@@ -55,41 +57,58 @@ export default function SplitView() {
                         return note;
                     });
                 });
-                updateNoteText(currentNoteId, tempNoteText);
+                updateNoteText(currentNoteId, tempNoteText).catch((rej) => {
+                    console.log(updateErrorFlag);
+                    if (!updateErrorFlag) {
+                        updateErrorFlag = true;
+                        console.log(updateErrorFlag);
+                        toast.error(`Error: ${rej.error}`);
+                        setTimeout(() => {
+                            updateErrorFlag = false;
+                        }, 5000);
+                    }
+                });
             }
         }, 250);
         return () => clearTimeout(timeoutId);
-        //to do add mechanism to handle updation failure
     }, [currentNote, currentNoteId, tempNoteText]);
 
     const createNote = async () => {
-        const newNoteId = await createNewNote();
-        fetchNotes()
-            .then((notesArr) => {
-                setNotes(notesArr);
+        createNewNote()
+            .then((newNoteId) => {
+                setCurrentNoteId(newNoteId);
+                fetchNotes()
+                    .then((notesArr) => {
+                        setNotes(notesArr);
+                    })
+                    .catch((rej) => {
+                        toast.error(`Error: ${rej.error}`);
+                    });
             })
-            .catch((err) => {
-                console.log('Error: ', err);
+            .catch((rej) => {
+                toast.error(`Error: ${rej.error}`);
             });
-        setCurrentNoteId(newNoteId);
-        //to do add mechanism to handle creation failure
     };
 
     const deleteNote = async (noteId) => {
-        setNotes((prevNotes) => {
-            const filteredNotes = prevNotes.filter((note) => note.id !== noteId);
-            const firstNoteId =
-                currentNoteId === noteId ? filteredNotes[0]?.id || '' : currentNoteId;
-            setCurrentNoteId(firstNoteId);
-            return filteredNotes;
-        });
-
-        await deleteNoteById(noteId);
-        // to do: add mechanism to handle deletion failure
+        deleteNoteById(noteId)
+            .then(() => {
+                setNotes((prevNotes) => {
+                    const filteredNotes = prevNotes.filter((note) => note.id !== noteId);
+                    const firstNoteId =
+                        currentNoteId === noteId ? filteredNotes[0]?.id || '' : currentNoteId;
+                    setCurrentNoteId(firstNoteId);
+                    return filteredNotes;
+                });
+            })
+            .catch((rej) => {
+                toast.error(`Error: ${rej.error}`);
+            });
     };
 
     return notes.length > 0 ? (
         <>
+            <ToastContainer />
             <StyledButton text="Logout" style="elegant" id="logout--btn" onClick={logoutUser} />
             <Split sizes={[15, 85]} direction="horizontal" className="split">
                 <Sidebar
@@ -104,6 +123,7 @@ export default function SplitView() {
         </>
     ) : (
         <>
+            <ToastContainer />
             <StyledButton text="Logout" style="elegant" id="logout--btn" onClick={logoutUser} />
             <div className="no--notes">
                 <h1>You have no notes</h1>
