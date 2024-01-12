@@ -21,7 +21,9 @@ export default function Login() {
 
     const handleLogin = (event) => {
         event.preventDefault();
-
+        if (!formData.username_input || !formData.password_input) {
+            return;
+        }
         loginUser(formData.username_input, formData.password_input)
             .then((res) => {
                 navigate('/');

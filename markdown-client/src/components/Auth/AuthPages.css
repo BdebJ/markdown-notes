@@ -34,3 +34,8 @@
     display: flex;
     text-align: center;
 }
+
+.auth--redirect {
+    text-align: center;
+    margin: 25px 0;
+}
