@@ -25,13 +25,26 @@ export default function Signup() {
 
     const handleSignup = (event) => {
         event.preventDefault();
-
+        if (formData.username_input.length < 4) {
+            toast.error('Error: Username must have atleast 4 characters.');
+            return;
+        }
+        if (formData.password_input.length < 6) {
+            toast.error('Error: Password must have atleast 6 characters.');
+            return;
+        }
+        if (formData.password_input.length !== formData.confirm_password_input) {
+            toast.error('Error: Passwords do not match');
+            return;
+        }
         registerUser(formData.username_input, formData.password_input)
             .then((res) => {
-                toast.info(res.message);
-                setTimeout(() => {
-                    navigate('/login');
-                }, 5000);
+                toast.info(res.message, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        navigate('/login');
+                    },
+                });
             })
             .catch((rej) => {
                 if (rej instanceof TypeError && rej.message === 'Failed to fetch') {
@@ -69,7 +82,7 @@ export default function Signup() {
                         confirmPassword={formData.confirm_password_input}
                         formDataChangeHandler={formDataChangeHandler}
                     />
-
+                    <h5>Password must have atleast 6 characters</h5>
                     <div className="auth--btnset">
                         <StyledButton
                             text="Sign up"
@@ -79,8 +92,8 @@ export default function Signup() {
                         />
                     </div>
 
-                    <div style={{ textAlign: 'center', margin: '50px 0' }}>
-                        <h4 style={{ margin: '0' }}>
+                    <div className="auth--redirect">
+                        <h4>
                             Already have an account?
                             <br />
                             Login in below
