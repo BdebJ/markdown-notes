@@ -33,7 +33,7 @@ export default function Signup() {
             toast.error('Error: Password must have atleast 6 characters.');
             return;
         }
-        if (formData.password_input.length !== formData.confirm_password_input) {
+        if (formData.password_input !== formData.confirm_password_input) {
             toast.error('Error: Passwords do not match');
             return;
         }
